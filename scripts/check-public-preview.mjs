@@ -14,5 +14,5 @@ try{
  await page.locator('#ia .mc-noiz-photo').scrollIntoViewIfNeeded();await page.locator('#ia .mc-noiz-photo img').evaluate(i=>i.decode());
  const clients={};for(const name of ['Jah Burguer','La Barberia','Krodec','Suprimed']){await page.locator('#marcas').getByRole('button',{name,exact:true}).click();const v=page.locator('#marcas video');await v.scrollIntoViewIfNeeded();clients[name]=await v.evaluate(async x=>{try{await x.play();await new Promise(r=>setTimeout(r,1000));return {ok:x.currentTime>0,time:x.currentTime,src:x.currentSrc,error:x.error?.message}}catch(e){return {ok:false,error:String(e),src:x.currentSrc,mediaError:x.error?.message}}});}
  console.log(JSON.stringify({url,heading:await page.locator('#inicio h1').innerText(),widths:await page.evaluate(()=>[innerWidth,document.documentElement.scrollWidth]),clients,errors,responses},null,2));
- if(errors.length||Object.values(clients).some(x=>!x.ok))process.exitCode=1;
-}catch(e){console.error('TEST ERROR',e);console.log(JSON.stringify({errors,responses},null,2));process.exitCode=1}finally{await browser.close()}
+ if(errors.length||Object.values(clients).some(x=>!x.ok)){console.log('::error::'+JSON.stringify({clients,errors,responses}).slice(0,6000));process.exitCode=1;}
+}catch(e){console.error('TEST ERROR',e);console.log('::error::'+JSON.stringify({error:String(e),errors,responses}).slice(0,6000));process.exitCode=1}finally{await browser.close()}
