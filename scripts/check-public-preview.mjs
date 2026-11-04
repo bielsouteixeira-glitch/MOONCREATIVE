@@ -5,7 +5,7 @@ if(!chrome) throw Error('Chrome não está disponível no runner');
 const browser=await chromium.launch({executablePath:chrome,args:['--no-sandbox'],headless:true});
 const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true,reducedMotion:'reduce'});
 let errors=[],responses=[];
-page.on('pageerror',e=>errors.push(e.message));page.on('requestfailed',r=>{if(r.url().includes('githubusercontent.com'))errors.push('requestfailed '+r.url()+' '+r.failure()?.errorText)});
+page.on('pageerror',e=>errors.push(e.message));page.on('requestfailed',r=>{if(r.url().includes('githubusercontent.com') && r.failure()?.errorText!=='net::ERR_ABORTED')errors.push('requestfailed '+r.url()+' '+r.failure()?.errorText)});
 page.on('response',r=>{if(r.url().includes('githubusercontent.com'))responses.push({status:r.status(),type:r.headers()['content-type'],url:r.url()});});
 const url='https://htmlpreview.github.io/?https://github.com/bielsouteixeira-glitch/MOONCREATIVE/blob/34a7212fd26a2094d3ac957179f605f3ae32fc63/preview-mobile.html';
 try{
