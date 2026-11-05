@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { NoizCase } from "./NoizCase";
+import { AIChatDemo, AIProspectingDemo } from "./AIDemonstrations";
+import "./visualRefinement.css";
 import { driveThumbUrl } from "../data/portfolio";
 
 const ANTONIO = "https://antoniocucinaitaliana.netlify.app/";
@@ -116,16 +118,7 @@ export function AIStudio() {
               Usamos IA para atendimento, pedidos, imagem e vídeo — sempre dentro do que dá para entregar de verdade.
               Nada aqui é uma promessa de integração pronta sem olhar o projeto.
             </p>
-            <div className="rounded-2xl overflow-hidden border border-white/10 relative aspect-video bg-[#0a0614]">
-              <div className="mc-ai-ambient" aria-hidden="true"><span /></div>
-            </div>
-            <div className="mt-4 rounded-2xl border border-white/10 bg-black/50 p-4">
-              <p className="text-[10px] font-display tracking-[0.18em] text-purple-bright mb-2">EXEMPLO VISUAL · NÃO É UM ROBÔ NO AR</p>
-              <div className="space-y-2 text-sm">
-                <p className="rounded-xl bg-white/5 px-3 py-2 max-w-[85%]">Olá. Quero saber o horário de funcionamento.</p>
-                <p className="rounded-xl bg-magenta-neon/20 px-3 py-2 ml-auto max-w-[85%]">Posso ajudar com horário, cardápio e pedido inicial. Um atendente assume quando a conversa pedir.</p>
-              </div>
-            </div>
+            <figure className="mc-ai-hero"><img src="/images/ai-business-assistant.webp" alt="Ilustração conceitual de uma assistente de inteligência artificial e conexões digitais" loading="lazy"/><figcaption>INTELIGÊNCIA ARTIFICIAL APLICADA · ILUSTRAÇÃO CONCEITUAL</figcaption></figure>
           </div>
           <div className="lg:col-span-7 reveal">
             <div className="grid sm:grid-cols-2 gap-3">
@@ -145,9 +138,13 @@ export function AIStudio() {
                 </button>
               ))}
             </div>
-            <NoizCase />
           </div>
         </div>
+        <div className="mc-ai-demos">
+          <section className="mc-chat-module" aria-labelledby="mc-chat-title"><div className="mc-ai-chat-intro"><span className="mc-ai-kicker">ATENDIMENTO AUTOMATIZADO</span><h3 id="mc-chat-title">Tenha um robô respondendo seus clientes por você.</h3><p>Automatize conversas, agilize o atendimento e mantenha sua empresa disponível para novas oportunidades.</p><span className="mc-prospect-disclaimer">Simulação ilustrativa · Nenhuma conversa conectada</span></div><AIChatDemo /></section>
+          <AIProspectingDemo />
+        </div>
+        <NoizCase />
       </div>
     </section>
   );

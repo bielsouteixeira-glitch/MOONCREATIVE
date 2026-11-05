@@ -1,5 +1,5 @@
 import { useModalFocus } from './useModalFocus';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { CLIENT_ORDER, CLIENT_REELS, WORKS, type Work } from '../optionB/portfolioBData';
 import { ImageB, VideoB } from '../optionB/MediaB';
 import './incrementalExperience.css';
@@ -11,9 +11,10 @@ const descriptions: Record<string, string> = {
  'CST Global': 'Trabalhos de comunicação e apresentação.', 'NOIZ': 'Campanha de camiseta desenvolvida com inteligência artificial.',
 };
 function WorkGallery({ title, works, onOpen }: { title: string; works: Work[]; onOpen: (work: Work)=>void }) {
- const [limit,setLimit]=useState(8);
+ const [limit,setLimit]=useState(8); const galleryRef=useRef<HTMLDivElement>(null);
+ useEffect(()=>{const el=galleryRef.current;if(!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-revealed');observer.unobserve(entry.target)}}),{threshold:.12});el.querySelectorAll('.mc-art-card').forEach(card=>observer.observe(card));return()=>observer.disconnect()},[limit,works]);
  if (!works.length) return null;
- return <section className="mc-client-section"><h4>{title}</h4><div className="mc-art-grid">{works.slice(0,limit).map(work=><figure key={work.id} className="mc-art-card"><button onClick={()=>onOpen(work)} aria-label={`Ampliar ${work.title}`}><ImageB work={work}/></button><figcaption><span>{work.kind}</span><br/>{work.title}</figcaption></figure>)}</div>{limit<works.length && <button className="btn-secondary mc-more" onClick={()=>setLimit(n=>n+8)}>Ver mais ({works.length-limit})</button>}</section>;
+ return <section className="mc-client-section"><h4>{title}</h4><div className="mc-art-grid" ref={galleryRef}>{works.slice(0,limit).map(work=><figure key={work.id} className="mc-art-card"><button onClick={()=>onOpen(work)} aria-label={`Ampliar ${work.title}`}><ImageB work={work}/></button><figcaption><span>{work.kind}</span><br/>{work.title}</figcaption></figure>)}</div>{limit<works.length && <button className="btn-secondary mc-more" onClick={()=>setLimit(n=>n+8)}>Ver mais ({works.length-limit})</button>}</section>;
 }
 function PhoneCarousel({ works, client }: { works: Work[]; client: string }) {
  const [index,setIndex] = useState(0); const work=works[index];
@@ -31,9 +32,9 @@ export function ClientBrands() {
  const art = works.filter(w=>w.type==='image' && w.category!=='referencia-cliente' && w.category!=='posts-redes-sociais' && w.kind!=='E-mail marketing');
  const emails = works.filter(w=>w.type==='image' && w.kind==='E-mail marketing');
  return <section id="marcas" className="relative py-16 overflow-hidden"><div className="absolute inset-0 bg-[#08060D]"/><div className="relative z-10 max-w-6xl mx-auto px-6">
-  <h2 className="font-display text-3xl font-bold md:text-4xl">Marcas que confiam na Moon.</h2><p className="mt-3 max-w-2xl text-sm text-lunar-gray">Vitrine com arquivos reais. Novos clientes entram nesta lista, sem reconstruir a seção.</p>
+  <span className="mc-client-kicker">CLIENTES · PROJETOS REAIS</span><h2 className="font-display text-3xl font-bold md:text-4xl mc-client-heading">Projetos que representam nosso trabalho.</h2><p className="mc-client-subtitle">Conheça algumas das marcas e projetos que fazem parte da nossa trajetória criativa.</p>
   <div className="mt-6 flex flex-wrap gap-2" aria-label="Clientes">{CLIENT_ORDER.map(name=><button key={name} type="button" className={`filter-chip ${client===name?'active':''}`} aria-pressed={client===name} onClick={()=>setClient(name)}>{name}</button>)}</div>
-  <article className="mt-6 rounded-2xl border border-white/10 bg-black/30 p-4 md:p-6" key={client}><p className="text-[10px] font-display tracking-[0.18em] text-purple-bright">CLIENTE · PORTFÓLIO</p><h3 className="font-display mt-1 text-2xl">{client}</h3><p className="mt-2 max-w-2xl text-sm text-lunar-gray">{descriptions[client]}</p>
+  <article className="mc-client-panel mt-6 rounded-2xl border border-white/10 bg-black/30 p-4 md:p-6" key={client}><p className="text-[10px] font-display tracking-[0.18em] text-purple-bright">CLIENTE · PORTFÓLIO</p><h3 className="font-display mt-1 text-2xl">{client}</h3><p className="mt-2 max-w-2xl text-sm text-lunar-gray">{descriptions[client]}</p>
    {videos.length>0 && <PhoneCarousel works={videos} client={client}/>}
    <WorkGallery title="Identificação e apresentação" works={references} onOpen={setZoom}/>
    <WorkGallery title="Posts" works={posts} onOpen={setZoom}/>
